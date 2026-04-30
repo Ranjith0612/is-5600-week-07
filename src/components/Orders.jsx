@@ -38,14 +38,24 @@ const Orders = () => {
             </tr>
           </thead>
           <tbody>
-            {orders && orders.map((order) => (
-              <tr key={order._id}>
-                <td className="tl pv2">{order._id}</td>
-                <td className="tl pv2">{order.buyerEmail}</td>
-                <td className="tl pv2">{order.products.join(', ')}</td>
-                <td className="tl pv2">{order.status}</td>
-              </tr>
-            ))}
+            {orders && orders.map((order) => {
+              const products = Array.isArray(order.products)
+                ? order.products.map((product) => {
+                    if (!product) return '';
+                    if (typeof product === 'string') return product;
+                    return product.description || product.alt_description || product._id;
+                  }).filter(Boolean)
+                : [];
+
+              return (
+                <tr key={order._id}>
+                  <td className="tl pv2">{order._id}</td>
+                  <td className="tl pv2">{order.buyerEmail}</td>
+                  <td className="tl pv2">{products.join(', ')}</td>
+                  <td className="tl pv2">{order.status}</td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
